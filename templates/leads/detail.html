@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}Lead Detail{% endblock %}
+
+{% block content %}
+    <div class="container d-flex justify-content-center pt-5">
+        
+        <div class="border" style="padding: 50px; border: solid black; border-radius: 20px;">
+            <h1>Lead Detail | {{lead.first_name}} {{lead.last_name}}</h1>
+            <hr>
+            <div class="row">
+                <div class="col-4">
+                    <h6>First Name: </h6>
+                    <h6>Last Name: </h6>
+                    <h6>Age: </h6>
+                    <h6>Agent: </h6>
+                </div>
+                <div class="col-1 d-flex" style="height: 100px;">
+                    <div class="vr"></div>
+                </div>
+                <div class="col-6">
+                    <h6>{{lead.first_name}}</h6>
+                    <h6>{{lead.last_name}}</h6>
+                    <h6>{{lead.age}}</h6>
+                    <h6>{{lead.agent}}</h6>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,128 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+
+
+</head>
+<body>
+
+        
+    <div class="container py-3">
+        <header>
+        <div class="d-flex flex-column flex-md-row align-items-center pb-3 mb-4 border-bottom">
+            <a href="{% url 'leads:home' %}" class="d-flex align-items-center text-dark text-decoration-none">
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-boxes" viewBox="0 0 16 16">
+                    <path d="M7.752.066a.5.5 0 0 1 .496 0l3.75 2.143a.5.5 0 0 1 .252.434v3.995l3.498 2A.5.5 0 0 1 16 9.07v4.286a.5.5 0 0 1-.252.434l-3.75 2.143a.5.5 0 0 1-.496 0l-3.502-2-3.502 2.001a.5.5 0 0 1-.496 0l-3.75-2.143A.5.5 0 0 1 0 13.357V9.071a.5.5 0 0 1 .252-.434L3.75 6.638V2.643a.5.5 0 0 1 .252-.434L7.752.066ZM4.25 7.504 1.508 9.071l2.742 1.567 2.742-1.567L4.25 7.504ZM7.5 9.933l-2.75 1.571v3.134l2.75-1.571V9.933Zm1 3.134 2.75 1.571v-3.134L8.5 9.933v3.134Zm.508-3.996 2.742 1.567 2.742-1.567-2.742-1.567-2.742 1.567Zm2.242-2.433V3.504L8.5 5.076V8.21l2.75-1.572ZM7.5 8.21V5.076L4.75 3.504v3.134L7.5 8.21ZM5.258 2.643 8 4.21l2.742-1.567L8 1.076 5.258 2.643ZM15 9.933l-2.75 1.571v3.134L15 13.067V9.933ZM3.75 14.638v-3.134L1 9.933v3.134l2.75 1.571Z"/>
+                </svg>
+                <span class="fs-4 mx-2">Django CRM</span>
+            </a>
+    
+            <nav class="d-inline-flex mt-2 mt-md-0 ms-md-auto">
+            <a class="me-3 py-2 text-dark text-decoration-none" href="#">Agents</a>
+            <a class="me-3 py-2 text-dark text-decoration-none" href="{% url 'leads:retrieve' %}">Leads</a>
+            <a class="me-3 py-2 text-dark text-decoration-none" href="#">User_name</a>
+            <a class="me-3 py-2 text-dark text-decoration-none" href="#">LogOut</a>
+            <a class="me-3 py-2 text-dark text-decoration-none" href="#">SignUp</a>
+            <a class="me-3 py-2 text-dark text-decoration-none" href="#">LogIn</a>
+            </nav>
+        </div>
+        </header>
+
+
+
+        {% block content %}
+
+        <div class="main jumbotron text-center">
+            <div class="container">
+                <h1 class="jumbotron-heading">Customer Relationship Management</h1>
+                <p class="lead text-muted">Customer relationship management (CRM) is a technology for managing all your company's relationships and interactions with customers and potential customers. The goal is simple: Improve business relationships. A CRM system helps companies stay connected to customers, streamline processes, and improve profitability.</p>
+                <p>
+                  <a href="#" class="btn btn-primary my-2">LogIn</a>
+                  <a href="#" class="btn btn-secondary my-2">Create an account</a>
+                </p>
+            </div>
+        </div>
+
+        <div class="container">
+            <div>
+                <h1>Leads</h1>
+                <div class="row">
+                    <div class="col-3">
+                        <a class="me-3 py-2 text-dark text-decoration-none h6" href="">View all categories</a>
+                    </div>
+                    <div class="col-9 text-end">
+                        <a class="me-3 py-2 text-dark text-decoration-none h6" href="">Create a new Lead</a>
+                    </div>
+                </div>
+                <hr>
+            </div>
+
+            <table class="table">
+                <thead class="thead-light">
+                  <tr>
+                    <th scope="col"></th>
+                    <th scope="col">First Name</th>
+                    <th scope="col">Last Name</th>
+                    <th scope="col">Age</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Phone #</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">Edit</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">1</th>
+                    <td>First_name</td>
+                    <td>Last_name</td>
+                    <td>age</td>
+                    <td>Email</td>
+                    <td>Phone#</td>
+                    <td>Category</td>
+                    <td><button class="btn btn-outline-dark btn-sm">Edit</button></td>
+                  </tr>
+                </tbody>
+              </table>
+        </div>
+
+        <div class="album py-5">
+            <div class="container">
+                <h1>Unassigned Leads</h1>
+                <hr>
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-3">
+                    <div class="col">
+                    <div class="card shadow-sm">
+                        <svg class="bd-placeholder-img card-img-top" width="100%" height="150" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"/></svg>
+            
+                        <div class="card-body">
+                        <p class="card-text">Description</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="btn-group">
+                            <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% endblock %}
+
+    </div>
+</body>
+</html>

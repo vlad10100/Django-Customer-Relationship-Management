@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block title %}DjangoCRM{% endblock %}
+
+{% block content %}
+    <div class="main jumbotron text-center">
+        <div class="container">
+            <h1 class="jumbotron-heading">Customer Relationship Management</h1>
+            <p class="lead text-muted">Customer relationship management (CRM) is a technology for managing all your company's relationships and interactions with customers and potential customers. The goal is simple: Improve business relationships. A CRM system helps companies stay connected to customers, streamline processes, and improve profitability.</p>
+            <p>
+            <a href="#" class="btn btn-primary my-2">LogIn</a>
+            <a href="#" class="btn btn-secondary my-2">Create an account</a>
+            </p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div>
+            <h1>Leads</h1>
+            <div class="row">
+                <div class="col-3">
+                    <a class="me-3 py-2 text-dark text-decoration-none h6" href="">View all categories</a>
+                </div>
+                <div class="col-9 text-end">
+                    <a class="me-3 py-2 text-dark text-decoration-none h6" href="{% url 'leads:create' %}">Create a new Lead</a>
+                </div>
+            </div>
+            <hr>
+        </div>
+
+        <table class="table">
+            <thead class="thead-light">
+            <tr>
+                <th scope="col"></th>
+                <th scope="col">First Name</th>
+                <th scope="col">Last Name</th>
+                <th scope="col">Age</th>
+                <th scope="col">Email</th>
+                <th scope="col">Phone #</th>
+                <th scope="col">Category</th>
+                <th scope="col"></th>
+            </tr>
+            </thead>
+
+            {% for lead in leads %}
+            <tbody>
+            <tr>
+                <th scope="row">{{lead.id}}</th>
+                <td>{{lead.first_name}}</td>
+                <td>{{lead.last_name}}</td>
+                <td>{{lead.age}}</td>
+                <td>Email</td>
+                <td>Phone#</td>
+                <td>Category</td>
+                <td>
+                    <a class="btn btn-outline-primary btn-sm" href="{% url 'leads:detail' lead.id %}">View</a>
+                    <a class="btn btn-outline-secondary btn-sm" href="{% url 'leads:edit' lead.id %}">Edit</a>
+                    <a class="btn btn-outline-danger btn-sm" href="{% url 'leads:delete' lead.id %}">Delete</a>
+                </td>
+            </tr>
+            </tbody>
+            {% endfor %}
+
+        </table>
+    </div>
+
+{% endblock %}
