@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <div class="container">
+        <form method="POST">
+            <h5>Aye you sure to delete Lead: {{lead.first_name}} {{lead.last_name}}?</h5>
+            <button class="btn btn-outline-danger">Delete</button>
+        </form>
+    </div>
+
+{% endblock %}

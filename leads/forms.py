@@ -9,13 +9,13 @@ User = get_user_model()
 class Lead_Form(forms.ModelForm):
     class Meta:
         model = Lead
-        fields = ['first_name', 'last_name', 'age', 'agent']
+        fields = ['first_name', 'last_name', 'age', 'agent', 'organization']
 
 
 class Lead_Edit_Form(forms.ModelForm):
     class Meta:
         model = Lead
-        fields = ['first_name', 'last_name', 'age']
+        fields = ['first_name', 'last_name', 'age', 'agent', 'organization']
 
 
 class CustomUser(UserCreationForm):

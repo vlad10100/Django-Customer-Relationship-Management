@@ -24,9 +24,15 @@ class AgentCreateView(OrganizerAndLoginRequiredMixin, CreateView):
         return reverse('agents:agent_list')
     
     def form_valid(self, form):
-        agent = form.save(commit=False)
-        agent.organization = self.request.user.userprofile
-        agent.save()
+        user = form.save(commit=False)
+        user.is_agent = True 
+        user.is_organizer = False 
+        user.set_password(user.username)
+        user.save()
+        Agent.objects.create(
+            user=user,
+            organization=self.request.user.userprofile
+        )
         return super(AgentCreateView, self).form_valid(form)
 
 
