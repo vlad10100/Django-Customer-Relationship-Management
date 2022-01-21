@@ -28,11 +28,14 @@
                 </svg>
                 <span class="fs-4 mx-2" id="xyz">Django CRM</span>
             </a>
-    
+            
             <nav class="d-inline-flex mt-2 mt-md-0 ms-md-auto">
-            <a class="me-3 py-2 text-dark text-decoration-none" href="#">Agents</a>
-            <a class="me-3 py-2 text-dark text-decoration-none" href="{% url 'leads:retrieve' %}">Leads</a>
             {% if user.is_authenticated %}
+                {% if user.is_organizer %}
+                <a class="me-3 py-2 text-dark text-decoration-none" href="{% url 'agents:agent_list' %}">Agents</a> 
+                {% endif %}
+                
+                <a class="me-3 py-2 text-dark text-decoration-none" href="{% url 'leads:retrieve' %}">Leads</a>
                 <a class="me-3 py-2 text-dark text-decoration-none" href="#"><strong>{{user}}</strong></a>
                 <a class="me-3 py-2 text-dark text-decoration-none" href="{% url 'leads:logout_view' %}">LogOut</a>
             {% else %}

@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="main jumbotron text-center">
+        <div class="container">
+            <h1 class="jumbotron-heading">Customer Relationship Management</h1>
+            <p class="lead text-muted">Customer relationship management (CRM) is a technology for managing all your company's relationships and interactions with customers and potential customers. The goal is simple: Improve business relationships. A CRM system helps companies stay connected to customers, streamline processes, and improve profitability.</p>
+            <p>
+            <a href="{% url 'leads:login_view' %}" class="btn btn-primary my-2">LogIn</a>
+            <a href="{% url 'leads:signup_view' %}" class="btn btn-secondary my-2">Create an account</a>
+            </p>
+        </div>
+    </div>
+{% endblock %}

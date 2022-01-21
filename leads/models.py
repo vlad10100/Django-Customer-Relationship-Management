@@ -1,12 +1,19 @@
 from django.db import models
 
+from django.db.models.signals import post_save
+
 from django.contrib.auth.models import AbstractUser
 
 class User(AbstractUser):
-    phone_number = models.CharField(max_length=11, blank=True)
+    is_organizer = models.BooleanField(default=True)
+    is_agent = models.BooleanField(default=False)
     
-    def __str__(self):    
-        return self.username
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.user.username
 
 
 class Lead(models.Model):
@@ -14,7 +21,8 @@ class Lead(models.Model):
     last_name = models.CharField(max_length=20)
     age = models.PositiveIntegerField()
 
-    agent = models.ForeignKey('Agent', on_delete=models.CASCADE)
+    organization = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    agent = models.ForeignKey('Agent',null=True, blank=True, on_delete=models.SET_NULL)
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
@@ -22,6 +30,15 @@ class Lead(models.Model):
 
 class Agent(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    organization = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.user.username
+
+
+def post_user_created_signal(sender, instance, created, **kwargs):
+    print(instance, created)
+    if created:
+        UserProfile.objects.create(user=instance)
+        
+post_save.connect(post_user_created_signal, sender=User)

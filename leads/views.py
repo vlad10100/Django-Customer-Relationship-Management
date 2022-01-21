@@ -3,6 +3,8 @@ from django.shortcuts import render, redirect, reverse
 
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
 
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 from .models import Lead, Agent, User
 from .forms import Lead_Form, Lead_Edit_Form, CustomUser
 
@@ -15,40 +17,67 @@ class SignUpView(CreateView):
 
 
 
-class LandingPageView(ListView):
+class Home(LoginRequiredMixin, ListView):
     template_name = 'leads/home.html'
-    queryset = Lead.objects.all()
     context_object_name = 'leads'
 
-class LeadListView(ListView):
-    template_name = 'leads/retrieve.html'
-    queryset = Lead.objects.all()
-    context_object_name = 'lead'
+    def get_queryset(self):
+        user = self.request.user 
+        if user.is_organizer:
+            queryset = Lead.objects.filter(organization=user.userprofile)
+        else:
+            queryset = Lead.objects.filter(organization=user.agent.organization)
+            # Filter for the agent that is logged in
+            queryset = queryset.filter(agent__user=user)
 
-class LeadDetailView(DetailView):
+        return queryset
+
+
+
+class LandingPageView(TemplateView):
+    template_name = 'leads/landingpage.html'
+
+
+class LeadListView(LoginRequiredMixin, ListView):
+    template_name = 'leads/retrieve.html'
+    context_object_name = 'lead'
+    queryset = Lead.objects.all()
+    # def get_queryset(self):
+    #     user = self.request.user 
+    #     if user.is_organizer:
+    #         queryset = Lead.objects.filter(organization=user.userprofile)
+    #     else:
+    #         queryset = Lead.objects.filter(organization=user.agent.organization)
+    #         # Filter for the agent that is logged in
+    #         queryset = queryset.filter(agent__user=user)
+
+    #     return queryset
+    
+
+class LeadDetailView(LoginRequiredMixin, DetailView):
     template_name = 'leads/detail.html'
     queryset = Lead.objects.all()
     context_object_name = 'lead'
 
-class LeadCreateView(CreateView):
+class LeadCreateView(LoginRequiredMixin, CreateView):
     template_name = 'leads/create.html'
     form_class = Lead_Form
     
     def get_success_url(self):
         return reverse("leads:home")
 
-    def form_valid(self, form):
-        # Send an E-mail
-        send_mail(
-            subject = "A lead has been created.",
-            message = "Go to the site to see the new lead.",
-            from_email = "admin@admin.com",
-            recipient_list = ['test@test.com']
-        )
-        return super(LeadCreateView, self).form_valid(form)
+    # def form_valid(self, form):
+    #     # Send an E-mail
+    #     send_mail(
+    #         subject = "A lead has been created.",
+    #         message = "Go to the site to see the new lead.",
+    #         from_email = "admin@admin.com",
+    #         recipient_list = ['test@test.com']
+    #     )
+    #     return super(LeadCreateView, self).form_valid(form)
 
 
-class LeadUpdateView(UpdateView):
+class LeadUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'leads/edit.html'
     form_class = Lead_Edit_Form
     queryset = Lead.objects.all()

@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container d-flex justify-content-center pt-5">
+            
+        <div class="border" style="padding: 20px; border: solid black; border-radius: 20px;">
+            <form method="POST">
+                <h2>Edit Agent | {{agent.user}} | {{agent.organization}}</h2>
+                <hr>
+                {% csrf_token %}
+                <table>
+                    {{form.as_table}}
+                </table>
+                <input class="btn btn-outline-success mt-3" type="submit" value="Update">
+                <a class="btn btn-outline-danger mt-3" href="">Delete</a>
+            </form>
+        </div>
+    </div>
+{% endblock %}

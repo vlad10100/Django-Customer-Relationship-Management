@@ -1,11 +1,12 @@
 from django.urls import path  
 from . import views 
-from .views import LandingPageView, LeadListView, LeadDetailView, LeadCreateView, LeadUpdateView, SignUpView
+from .views import Home, LandingPageView, LeadListView, LeadDetailView, LeadCreateView, LeadUpdateView, SignUpView
 from django.contrib.auth.views import LoginView, LogoutView
 app_name = 'leads'
 
 urlpatterns = [
-    path('', LandingPageView.as_view(), name='home'),
+    path('', LandingPageView.as_view(), name='landingpage'),
+    path('home/', Home.as_view(), name='home'),
     path('retrieve/', LeadListView.as_view(), name='retrieve'),
     path('detail/<int:pk>', LeadDetailView.as_view(), name='detail'),
     path('create/', LeadCreateView.as_view(), name='create'),

@@ -1,31 +1,34 @@
 {% extends 'base.html' %}
-{% block title %}Leads{% endblock %}
+
 
 {% block content %}
     <div>
-        <h2>Leads</h2>
+        <h2>Agents</h2>
+        <div class="text-end">
+            <a class="me-3 py-2 text-dark text-decoration-none h6" href="{% url 'agents:agent_create' %}">Create a new Agent</a>
+        </div>
         <hr>
+
         
         <div class="album py-5">
             <div class="container">
                 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-3">
-                    {% for x in lead %}
+                    {% for agent in agents %}
                     <div class="col">
                     <div class="card shadow-sm">
                         <svg class="bd-placeholder-img card-img-top" width="100%" height="150" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"/></svg>
                         <div class="card-body">
-                        <p class="card-text h6">{{x.first_name}} {{x.last_name}}</p>
-                        <p>{{x.age}} | {{x.agent}}</p>
-
+                        <p class="card-text h6">{{agent.user}}</p>
+                        <p>{{agent.organization}}</p>
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="btn-group">
-                                <a class="btn btn-outline-primary btn-sm" href="{% url 'leads:detail' x.id %}">View</a>
-                                <a class="btn btn-outline-secondary btn-sm" href="{% url 'leads:edit' x.id %}">Edit</a>
-                                <a class="btn btn-outline-danger btn-sm" href="{% url 'leads:delete' x.id %}">Delete</a>
-                                
+                                <a class="btn btn-outline-primary btn-sm" href="{% url 'agents:agent_detail' agent.id %}">View</a>
+                                <a class="btn btn-outline-secondary btn-sm" href="{% url 'agents:agent_update' agent.id %}">Edit</a>
+                                <a class="btn btn-outline-danger btn-sm" href="{% url 'agents:agent_delete' agent.id %}">Delete</a>
                             </div>
                         </div>
                         </div>
+                    
                     </div>
                     </div>
                     {% endfor %}
