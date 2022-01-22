@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
-{% block title %}Lead Detail{% endblock %}
+
 
 {% block content %}
     <div class="container d-flex justify-content-center pt-5">
-        
+            
         <div class="border" style="padding: 50px; border: solid black; border-radius: 20px;">
-            <h1>Lead Detail | {{lead.first_name}} {{lead.last_name}}</h1>
+            <h1>Lead Update Detail | {{lead.first_name}} {{lead.last_name}}</h1>
             <hr>
             <div class="row">
                 <div class="col-4">
@@ -27,7 +27,15 @@
                 </div>
 
             </div>
-            <a href="{% url 'leads:lead_category_update' lead.pk %}">Update Details</a>
+            <div class="container py-5" style="border: solid gray 2px; border-radius: 5px;" >
+                <form method="POST">
+                    {% csrf_token %}
+                    {{form}}
+                    <button class="btn btn-outline-dark" type="submit">Update</button>
+                </form>
+            </div>
         </div>
     </div>
+
+
 {% endblock %}

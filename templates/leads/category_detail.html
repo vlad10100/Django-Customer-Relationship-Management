@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+    <div class="main jumbotron text-center">
+        <div class="container">
+            <h1 class="jumbotron-heading">Customer Relationship Management</h1>
+            <p class="lead text-muted">Customer relationship management (CRM) is a technology for managing all your company's relationships and interactions with customers and potential customers. The goal is simple: Improve business relationships. A CRM system helps companies stay connected to customers, streamline processes, and improve profitability.</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div>
+            <h1>Category</h1>
+            <h5>{{category.name}}</h5>
+            <hr>
+        </div>
+
+        <table class="table">
+            <thead class="thead-light">
+            <tr>
+                <th scope="col">FirstName</th>
+                <th scope="col">LastName</th>
+            </tr>
+            </thead>
+
+            
+            <tbody>
+                {% for lead in category.leads.all %}
+                    <tr>
+                        <td>
+                            <a href="{% url 'leads:detail' lead.pk %}">{{lead.first_name}}</a>
+                        </td>
+                        <td>{{lead.last_name}}</td>
+                        
+                    </tr>
+                {% endfor %}
+            </tbody>
+            
+            
+        </table>
+    </div>
+
+
+{% endblock %}

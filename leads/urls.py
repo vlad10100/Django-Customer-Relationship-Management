@@ -3,7 +3,8 @@ from django.urls import path
 from . import views 
 from .views import (Home, LandingPageView, LeadListView, 
                     LeadDetailView, LeadCreateView, LeadUpdateView, 
-                    SignUpView, LeadDeleteView, AssignAgentView
+                    SignUpView, LeadDeleteView, AssignAgentView, CategoryListView, 
+                    CategoryDetailView, LeadCategoryUpdateView
                     )
 from django.contrib.auth.views import (LoginView, LogoutView,                  
                                         PasswordResetView, PasswordResetDoneView,
@@ -21,6 +22,10 @@ urlpatterns = [
     path('delete/<int:pk>', LeadDeleteView.as_view(), name='delete'),
     path('assign_agent/<int:pk>', AssignAgentView.as_view(), name='assign_agent'),
 
+    path('categories/', CategoryListView.as_view(), name='category_list'),
+    path('category_detail/<int:pk>/', CategoryDetailView.as_view(), name='category_detail'),
+
+    path('lead_category_update/<int:pk>/', LeadCategoryUpdateView.as_view(), name='lead_category_update'),
 
 
 

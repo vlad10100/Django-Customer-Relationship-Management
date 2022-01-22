@@ -4,8 +4,17 @@
 {% block content %}
     <div>
         <h2>Leads</h2>
-        <div class="text-end">
-            <a class="me-3 py-2 text-dark text-decoration-none h6" href="{% url 'leads:create' %}">Create a new Lead</a>
+        <div class="row">
+            <div class="col-3">
+                <a class="me-3 py-2 text-dark text-decoration-none h6" href="{% url 'leads:category_list' %}">View all categories</a>
+            </div>
+            {% if user.is_organizer %}
+            <div class="col-9 text-end">
+                <a class="me-3 py-2 text-dark text-decoration-none h6" href="{% url 'leads:create' %}">
+                    Create a new Lead
+                </a>
+            </div>
+            {% endif %}
         </div>
         <hr>
         
