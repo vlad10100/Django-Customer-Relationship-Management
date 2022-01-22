@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container">
+        <h3>Assign Lead: {{lead.first_name}} {{lead.last_name}} to an Agent</h3>
+        <hr>
+        <form method="POST">
+            {% csrf_token %}
+            {{form}}
+            <button class="btn btn-outline-primary">Assign</button>
+        </form>
+    </div>
+
+{% endblock %}

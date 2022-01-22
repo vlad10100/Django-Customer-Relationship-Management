@@ -1,13 +1,13 @@
 from django.core.mail import send_mail
 from django.shortcuts import render, redirect, reverse
 
-from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView, FormView
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from agents.mixins import OrganizerAndLoginRequiredMixin
 from .models import Lead, Agent, User
-from .forms import Lead_Form, Lead_Edit_Form, CustomUser
+from .forms import Lead_Form, Lead_Edit_Form, CustomUser, AssignAgentForm
 
 class SignUpView(CreateView):
     template_name = 'registration/signup.html'
@@ -33,6 +33,38 @@ class Home(LoginRequiredMixin, ListView):
 
         return queryset
 
+    def get_context_data(self, **kwargs):        
+        context = super(Home, self).get_context_data(**kwargs)
+        user = self.request.user
+        if user.is_organizer:
+            queryset = Lead.objects.filter(organization=user.userprofile, agent__isnull=True)
+            context.update({
+                "x_leads": queryset
+            })
+        return context
+
+
+class AssignAgentView(OrganizerAndLoginRequiredMixin, FormView):
+    template_name = 'leads/assign_agent.html'
+    form_class = AssignAgentForm
+
+    def get_success_url(self):
+        return reverse('leads:home')
+
+    def get_form_kwargs(self, **kwargs):
+        kwargs = super(AssignAgentView, self).get_form_kwargs(**kwargs)
+        kwargs.update({
+            "request": self.request
+        })
+        return kwargs
+
+    def form_valid(self, form):
+        agent = (form.cleaned_data["agent"])
+        lead = Lead.objects.get(id=self.kwargs["pk"])
+        lead.agent = agent 
+        lead.save()
+        return super(AssignAgentView, self).form_valid(form)
+
 
 
 class LandingPageView(TemplateView):
@@ -45,16 +77,18 @@ class LeadListView(LoginRequiredMixin, ListView):
 
 
     def get_queryset(self):
-        user = self.request.user 
+        user = self.request.user
+        # Initial queryset for the entire organization 
         if user.is_organizer:
-            queryset = Lead.objects.filter(organization=user.userprofile)
+            queryset = Lead.objects.filter(organization=user.userprofile, agent__isnull=False)
         else:
-            queryset = Lead.objects.filter(organization=user.agent.organization)
+            queryset = Lead.objects.filter(organization=user.agent.organization, agent__isnull=False)
             # Filter for the agent that is logged in
             queryset = queryset.filter(agent__user=user)
 
         return queryset
-    
+
+
 
 class LeadDetailView(OrganizerAndLoginRequiredMixin, DetailView):
     template_name = 'leads/detail.html'
