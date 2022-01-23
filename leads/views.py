@@ -1,14 +1,38 @@
 from django.core.mail import send_mail
+
 from django.shortcuts import render, redirect, reverse
 
-from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView, FormView
+from django.views.generic import (TemplateView, ListView, DetailView, 
+                                CreateView, UpdateView, DeleteView, 
+                                FormView)
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from agents.mixins import OrganizerAndLoginRequiredMixin
-from .models import Lead, Agent, User, Category
-from .forms import Lead_Form, Lead_Edit_Form, CustomUser, AssignAgentForm, LeadCategoryUpdateForm
 
+
+
+from .models import Lead, Agent, User, Category
+from .forms import (Lead_Form, Lead_Edit_Form, CustomUser,
+                AssignAgentForm, LeadCategoryUpdateForm)
+
+
+"""
+template_name = allows to edit the name of the template to be used.
+form_class = To access a custom modelform/forms
+def get_success_url() = a way to redirect to the template_name of the class
+context_object_name = if not provided, object_list is the default.
+                    Human understandable name of variable to access from the templates
+def get_queryset() = determines the list of objects you want to display 
+def get_context_data() = used to populate a dictionary to use as a template context.
+def form_valid() = to validate a form and can be overridden before saving.
+def get_form_kwargs() = no idea yet,
+                    Return the keyword arguments for instantiating the form.
+"""
+
+
+
+# SIGNUP
 class SignUpView(CreateView):
     template_name = 'registration/signup.html'
     form_class = CustomUser
@@ -17,7 +41,13 @@ class SignUpView(CreateView):
         return reverse('leads:login_view')
 
 
+# Landing Page for authorized and unauthorized users
+class LandingPageView(TemplateView):
+    template_name = 'leads/landingpage.html'
 
+
+
+# Home Page for authorized users
 class Home(LoginRequiredMixin, ListView):
     template_name = 'leads/home.html'
     context_object_name = 'leads'
@@ -44,6 +74,81 @@ class Home(LoginRequiredMixin, ListView):
         return context
 
 
+# Lead List View - display all leads only
+class LeadListView(LoginRequiredMixin, ListView):
+    template_name = 'leads/retrieve.html'
+    context_object_name = 'lead'
+
+
+    def get_queryset(self):
+        user = self.request.user
+        # Initial queryset for the entire organization 
+        if user.is_organizer:
+            queryset = Lead.objects.filter(organization=user.userprofile, agent__isnull=False)
+        else:
+            queryset = Lead.objects.filter(organization=user.agent.organization, agent__isnull=False)
+            # Filter for the agent that is logged in
+            queryset = queryset.filter(agent__user=user)
+
+        return queryset
+
+
+# Lead Detail View - display details of a certain Lead
+class LeadDetailView(OrganizerAndLoginRequiredMixin, DetailView):
+    template_name = 'leads/detail.html'
+    queryset = Lead.objects.all()
+    context_object_name = 'lead'
+
+
+# Lead Create View - Create Lead Form
+class LeadCreateView(OrganizerAndLoginRequiredMixin, CreateView):
+    template_name = 'leads/create.html'
+    form_class = Lead_Form
+    
+    def get_success_url(self):
+        return reverse("leads:home")
+
+    def form_valid(self, form):
+        lead = form.save(commit=False)
+        lead.organization = self.request.user.userprofile
+        lead.save()
+        # Send an E-mail
+        send_mail(
+            subject = "A lead has been created.",
+            message = "Go to the site to see the new lead.",
+            from_email = "admin@admin.com",
+            recipient_list = ['test@test.com']
+        )
+        return super(LeadCreateView, self).form_valid(form)
+
+
+# Lead Update View - Update Lead Form
+class LeadUpdateView(OrganizerAndLoginRequiredMixin, UpdateView):
+    template_name = 'leads/edit.html'
+    form_class = Lead_Edit_Form
+
+    def get_queryset(self):
+        user = self.request.user
+        return Lead.objects.filter(organization=user.userprofile)
+    
+    def get_success_url(self):
+        return reverse("leads:home")
+
+
+# Lead Delete View - Confirm the deletion of the Lead
+class LeadDeleteView(OrganizerAndLoginRequiredMixin, DeleteView):
+    template_name = 'leads/delete.html'
+    context_object_name = 'lead'
+
+    def get_success_url(self):
+        return reverse("leads:home")
+
+    def get_queryset(self):
+        user = self.request.user 
+        return Lead.objects.filter(organization=user.userprofile)
+
+
+# Assign Agent View - Assign an Agent to a Lead
 class AssignAgentView(OrganizerAndLoginRequiredMixin, FormView):
     template_name = 'leads/assign_agent.html'
     form_class = AssignAgentForm
@@ -67,79 +172,11 @@ class AssignAgentView(OrganizerAndLoginRequiredMixin, FormView):
 
 
 
-class LandingPageView(TemplateView):
-    template_name = 'leads/landingpage.html'
-
-
-class LeadListView(LoginRequiredMixin, ListView):
-    template_name = 'leads/retrieve.html'
-    context_object_name = 'lead'
-
-
-    def get_queryset(self):
-        user = self.request.user
-        # Initial queryset for the entire organization 
-        if user.is_organizer:
-            queryset = Lead.objects.filter(organization=user.userprofile, agent__isnull=False)
-        else:
-            queryset = Lead.objects.filter(organization=user.agent.organization, agent__isnull=False)
-            # Filter for the agent that is logged in
-            queryset = queryset.filter(agent__user=user)
-
-        return queryset
 
 
 
-class LeadDetailView(OrganizerAndLoginRequiredMixin, DetailView):
-    template_name = 'leads/detail.html'
-    queryset = Lead.objects.all()
-    context_object_name = 'lead'
 
-class LeadCreateView(OrganizerAndLoginRequiredMixin, CreateView):
-    template_name = 'leads/create.html'
-    form_class = Lead_Form
-    
-    def get_success_url(self):
-        return reverse("leads:home")
-
-    def form_valid(self, form):
-        lead = form.save(commit=False)
-        lead.organization = self.request.user.userprofile
-        lead.save()
-        # Send an E-mail
-        send_mail(
-            subject = "A lead has been created.",
-            message = "Go to the site to see the new lead.",
-            from_email = "admin@admin.com",
-            recipient_list = ['test@test.com']
-        )
-        return super(LeadCreateView, self).form_valid(form)
-
-
-class LeadUpdateView(OrganizerAndLoginRequiredMixin, UpdateView):
-    template_name = 'leads/edit.html'
-    form_class = Lead_Edit_Form
-
-    def get_queryset(self):
-        user = self.request.user
-        return Lead.objects.filter(organization=user.userprofile)
-    
-    def get_success_url(self):
-        return reverse("leads:home")
-
-class LeadDeleteView(OrganizerAndLoginRequiredMixin, DeleteView):
-    template_name = 'leads/delete.html'
-    context_object_name = 'lead'
-
-    def get_success_url(self):
-        return reverse("leads:home")
-
-    def get_queryset(self):
-        user = self.request.user 
-        return Lead.objects.filter(organization=user.userprofile)
-
-
-
+# Category List View - Display all the categories
 class CategoryListView(LoginRequiredMixin, ListView):
     template_name = 'leads/category_list.html'
     context_object_name = 'category_list'
@@ -171,7 +208,7 @@ class CategoryListView(LoginRequiredMixin, ListView):
         return queryset
 
 
-
+# Category Detail View - Display the details within the category
 class CategoryDetailView(LoginRequiredMixin, DetailView):
     template_name = 'leads/category_detail.html'
     context_object_name = 'category'
@@ -185,7 +222,7 @@ class CategoryDetailView(LoginRequiredMixin, DetailView):
 
         return queryset
 
-
+# Lead Category Update View - Update the Category where the Lead belongs.
 class LeadCategoryUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'leads/lead_category_update.html'
     form_class = LeadCategoryUpdateForm
@@ -202,6 +239,43 @@ class LeadCategoryUpdateView(LoginRequiredMixin, UpdateView):
     
     def get_success_url(self, **kwargs):
         return reverse('leads:detail', kwargs={'pk':self.get_object().id})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
